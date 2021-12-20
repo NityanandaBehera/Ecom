@@ -14,6 +14,10 @@ def index(request):
 
 
     return render(request,'index.html',{'product_objects':product_objects})
+def Details(request,id):
+
+    product_objects=products.objects.get(id=id)
+    return render(request,'detail.html',{'product_objects':product_objects})
 
 
 # Create your views here.
