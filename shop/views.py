@@ -1,6 +1,8 @@
-from django.shortcuts import render
-from .models import  products
+from django.shortcuts import redirect, render
+from datetime import datetime
+from .models import  products,Comment
 from django.core.paginator import Paginator
+from .forms import commentForm
 
 
 def index(request):
@@ -18,6 +20,24 @@ def Details(request,id):
 
     product_objects=products.objects.get(id=id)
     return render(request,'detail.html',{'product_objects':product_objects})
+def add_comment(request,id):
+    product_objects=products.objects.get(id=id)
+    form=commentForm(instance=product_objects)
+    if request.method=="POST":
+        form=commentForm(request.POST,instance=product_objects)
+        if form.is_valid():
+            name=request.user.username
+            body=form.cleaned_data['comment_body']
+            c=Comment(product=product_objects,commenter_name=name,comment_body=body,date_added=datetime.now())
+            c.save()
+            return redirect('index')
+        else:
+            print('form is invalid')
+    
+    context={
+        'form':form
+    }
+    return render(request,'add_comment.html',context)
 
 
 # Create your views here.
