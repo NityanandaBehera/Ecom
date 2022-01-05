@@ -16,10 +16,12 @@ def index(request):
 
 
     return render(request,'index.html',{'product_objects':product_objects})
+    
 def Details(request,id):
-
     product_objects=products.objects.get(id=id)
+    print(product_objects)
     return render(request,'detail.html',{'product_objects':product_objects})
+
 def add_comment(request,id):
     product_objects=products.objects.get(id=id)
     form=commentForm(instance=product_objects)

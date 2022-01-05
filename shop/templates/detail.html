@@ -11,13 +11,13 @@
     <style>
         .col-md-12{
             font-weight: normal;
-          }
-          .col-md-16{
+        }
+        .col-md-16{
             font-weight: bold;
             color: yellow;
             font-size:24px;
             
-          }
+        }
     </style>
 </head>
 
@@ -27,14 +27,13 @@
         
             <!-- <input type="text" placeholder="Search.."> -->
         </div><br>
-         <!-- brand bar  -->
+        <!-- brand bar  -->
         <br>
         <div class="row" id="full_row">
             <div class="col-md-6">
                 <div class="row">
                     <div class="col-md-12">
                         <img id="detail_img" src="{{ product_objects.image }}">
-                        
                     </div>
                 </div>
             </div>
@@ -50,30 +49,21 @@
                 </div>
                 <div class="row">
                     <div class="col-md-16">
-                       Add Comments(no of comments)
+                    Add Comments(no of comments)
                     </div>
-                   <br>
-                   <br>
-                   {% if not product_objects.comment.all %}
-
+                    <br>
+                    <br>
+                    {% if not product_objects.comment.all %}
                 <p>Not comments added yet...</p>
-               
-
             {% else %}
-
                 {% for comment in product_objects.comment.all %}
 
                     <h5><strong>{{ comment.commenter_name }}</strong></h5>
                     <p>{{ comment.comment_body }}</p>
                     <p><small>{{ comment.date_added }}</small></p>
-                    
-                    
-
                 {% endfor %}
-
             {% endif %}
-            <p><a class="btn btn-primary" href="{%url 'http://127.0.0.1:8000/1/add-comment' %}">Add comment</a></p>
-
+            <p><a class="btn btn-primary" href="/{{product_objects.id}}/add-comment">Add comment</a></p>
             </div>
         </div>
     </div>
