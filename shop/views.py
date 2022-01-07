@@ -1,10 +1,65 @@
+from django.http import request
 from django.shortcuts import redirect, render
 from datetime import datetime
 from .models import  products,Comment
 from django.core.paginator import Paginator
 from .forms import commentForm
+from django.contrib import auth
+from django.contrib.auth.models import User
 
 
+
+
+
+def signup(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        email = request.POST['email']
+        password1 = request.POST['password']
+        password2 = request.POST['password']
+
+        if password1 == password2:
+            if User.objects.filter(username=username).exists():
+                print('Username exists! try another username...')
+                return redirect('signup')
+            else:
+                if User.objects.filter(email=email).exists():
+                    print('Email is already taken! try another one')
+                    return redirect('signup')
+                else:
+                    user = User.objects.create_user(username=username, email=email, password1=password2)
+                    user.save()
+                    return redirect('login')   
+        else:
+            print('Password did not matched!..')
+            return redirect('signup')
+    else:
+        return render(request, 'signup.html') 
+def login(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+
+        user = auth.authenticate(username=username, password=password)
+
+        if user is not None:
+            auth.login(request,user)
+            print('Login Successfull!')
+            return redirect('home')
+        else:
+            print('invalid credentials')
+            return redirect('login') 
+    else:
+        return render(request, 'login.html')           
+
+
+def logout(request):
+    if request.method == 'POST':
+        auth.logout(request)
+        print('logged out from websites..')
+        return redirect('login')
+def home(request):
+    return render(request,'home.html')
 def index(request):
     product_objects=products.objects.all()
     item_name=request.GET.get('item_name')
