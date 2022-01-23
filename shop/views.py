@@ -1,22 +1,18 @@
 from django.http import request
-from django.shortcuts import redirect, render
+from django.shortcuts import render,redirect,HttpResponse
 from datetime import datetime
 from .models import  products,Comment
 from django.core.paginator import Paginator
 from .forms import commentForm
 from django.contrib import auth
 from django.contrib.auth.models import User
-
-
-
-
-
+from django.contrib.auth.decorators import login_required
 def signup(request):
     if request.method == 'POST':
         username = request.POST['username']
         email = request.POST['email']
         password1 = request.POST['password']
-        password2 = request.POST['password']
+        password2 = request.POST['password2']
 
         if password1 == password2:
             if User.objects.filter(username=username).exists():
@@ -27,7 +23,7 @@ def signup(request):
                     print('Email is already taken! try another one')
                     return redirect('signup')
                 else:
-                    user = User.objects.create_user(username=username, email=email, password1=password2)
+                    user = User.objects.create_user(username=username, email=email, password=password1)
                     user.save()
                     return redirect('login')   
         else:
@@ -39,27 +35,29 @@ def login(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
-
         user = auth.authenticate(username=username, password=password)
 
         if user is not None:
             auth.login(request,user)
             print('Login Successfull!')
-            return redirect('home')
+            return redirect('index')
         else:
             print('invalid credentials')
             return redirect('login') 
     else:
-        return render(request, 'login.html')           
+        return render(request, 'login.html') 
 
 
 def logout(request):
     if request.method == 'POST':
         auth.logout(request)
         print('logged out from websites..')
-        return redirect('login')
+        return redirect('home')
+
+
 def home(request):
     return render(request,'home.html')
+@login_required(login_url='index')
 def index(request):
     product_objects=products.objects.all()
     item_name=request.GET.get('item_name')
@@ -71,7 +69,7 @@ def index(request):
 
 
     return render(request,'index.html',{'product_objects':product_objects})
-    
+@login_required(login_url='index')  
 def Details(request,id):
     product_objects=products.objects.get(id=id)
     print(product_objects)

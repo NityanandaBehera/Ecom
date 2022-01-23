@@ -3,6 +3,7 @@ from datetime import datetime
 from django.db.models.deletion import CASCADE
 from ckeditor.fields import RichTextField
 """ from django.contrib.auth.models import User """
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -18,7 +19,7 @@ class products(models.Model):
     image = models.CharField(max_length=500)
 class Comment(models.Model):
     product=models.ForeignKey(products,related_name="comment",on_delete=CASCADE)
-    """  commenter_name=models.ForeignKey(User) """
+    """  commenter_name=models.ForeignKey(User)  """
     commenter_name=models.CharField(max_length=100)
     comment_body=models.TextField()
     date_added=models.DateTimeField(auto_now_add=True)
